@@ -1,4 +1,3 @@
-const { v4: uuidv4 } = require('uuid');
 const { getRandomWords, generateHint } = require('./words');
 
 // Avatar options matching skribbl.io style
