@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SKRIBBL // ARCADE</title>
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🕹️</text></svg>">
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@0.263.1/dist/umd/lucide.js"></script>
+</head>
+<body>
+
+  <div id="toast" class="toast"></div>
+
+  <div id="kickedModal" class="kicked-modal">
+    <div class="kicked-content">
+      <h2>GAME OVER</h2>
+      <p id="kickReason">You were voted out by other players.</p>
+      <button class="btn btn-create" onclick="location.reload()">CONTINUE?</button>
+    </div>
+  </div>
+
+  <!-- HOME -->
+  <div id="homeScreen" class="screen active">
+    <div class="home-bg-effects">
+      <div class="floating-shape shape-1"></div>
+      <div class="floating-shape shape-2"></div>
+      <div class="floating-shape shape-3"></div>
+      <div class="floating-shape shape-4"></div>
+      <div class="floating-shape shape-5"></div>
+    </div>
+    <div class="home-container">
+      <div class="logo">
+        <div class="logo-icon">
+          <i data-lucide="pencil" class="logo-pencil-icon"></i>
+        </div>
+        <h1>SKRIBBL</h1>
+        <p>DRAW // GUESS // WIN</p>
+      </div>
+      <div class="home-form">
+        <div class="avatar-selector">
+          <button class="avatar-nav-btn" onclick="prevAvatarPart('eyes')">
+            <i data-lucide="chevron-left"></i>
+          </button>
+          <div class="avatar-preview-wrapper">
+            <div class="avatar-preview" id="homeAvatar" onclick="randomizeAvatar()"></div>
+            <button class="avatar-shuffle-btn" onclick="randomizeAvatar()" title="Randomize">
+              <i data-lucide="shuffle"></i>
+            </button>
+          </div>
+          <button class="avatar-nav-btn" onclick="nextAvatarPart('eyes')">
+            <i data-lucide="chevron-right"></i>
+          </button>
+        </div>
+
+        <div class="avatar-customize-row">
+          <button class="avatar-option-btn" onclick="cycleAvatarColor()" title="Change Color">
+            <i data-lucide="palette"></i>
+            <span>Color</span>
+          </button>
+          <button class="avatar-option-btn" onclick="cycleAvatarEyes()" title="Change Eyes">
+            <i data-lucide="eye"></i>
+            <span>Eyes</span>
+          </button>
+          <button class="avatar-option-btn" onclick="cycleAvatarMouth()" title="Change Mouth">
+            <i data-lucide="smile"></i>
+            <span>Mouth</span>
+          </button>
+        </div>
+
+        <div class="input-group">
+          <div class="input-icon-wrapper">
+            <i data-lucide="user" class="input-icon"></i>
+            <input type="text" id="playerName" placeholder="ENTER NAME" maxlength="20" autocomplete="off">
+          </div>
+        </div>
+        <button class="btn btn-create" onclick="createRoom()">
+          <i data-lucide="plus-circle"></i>
+          CREATE ROOM
+        </button>
+        <div class="divider">OR JOIN</div>
+        <div class="join-section">
+          <div class="input-icon-wrapper" style="flex:1">
+            <i data-lucide="link" class="input-icon"></i>
+            <input type="text" id="joinRoomId" placeholder="ROOM CODE" maxlength="6" style="text-transform: uppercase" autocomplete="off">
+          </div>
+          <button class="btn btn-join" onclick="joinRoom()">
+            <i data-lucide="log-in"></i>
+            JOIN
+          </button>
+        </div>
+      </div>
+      <div class="home-footer">
+        <span class="home-footer-item"><i data-lucide="users"></i> Multiplayer</span>
+        <span class="home-footer-item"><i data-lucide="zap"></i> Real-time</span>
+        <span class="home-footer-item"><i data-lucide="gamepad-2"></i> Retro</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- LOBBY -->
+  <div id="lobbyScreen" class="screen">
+    <div class="lobby-container">
+      <div class="lobby-header">
+        <h2><i data-lucide="gamepad-2"></i> WAITING ROOM</h2>
+        <div class="room-share-section">
+          <div class="room-code" id="lobbyRoomCode">------</div>
+          <button class="btn btn-share" onclick="copyInviteLink()">
+            <i data-lucide="share-2"></i>
+            COPY LINK
+          </button>
+        </div>
+      </div>
+
+      <div class="lobby-panel" id="settingsPanel">
+        <h3><i data-lucide="settings"></i> CONFIG</h3>
+        <div class="settings-grid">
+          <div class="setting-item">
+            <label><i data-lucide="users"></i> PLAYERS</label>
+            <select id="settingPlayers">
+              <option value="2">2</option>
+              <option value="3">3</option>
+              <option value="4">4</option>
+              <option value="5">5</option>
+              <option value="6">6</option>
+              <option value="7">7</option>
+              <option value="8" selected>8</option>
+              <option value="9">9</option>
+              <option value="10">10</option>
+              <option value="12">12</option>
+              <option value="14">14</option>
+              <option value="16">16</option>
+              <option value="18">18</option>
+              <option value="20">20</option>
+              <option value="22">22</option>
+              <option value="24">24</option>
+              <option value="26">26</option>
+              <option value="28">28</option>
+              <option value="30">30</option>
+              <option value="32">32</option>
+              <option value="34">34</option>
+              <option value="36">36</option>
+              <option value="38">38</option>
+              <option value="40">40</option>
+              <option value="999">Unlimited</option>
+            </select>
+          </div>
+          <div class="setting-item">
+            <label><i data-lucide="repeat"></i> ROUNDS</label>
+            <select id="settingRounds">
+              <option value="2">2</option>
+              <option value="3" selected>3</option>
+              <option value="4">4</option>
+              <option value="5">5</option>
+              <option value="6">6</option>
+              <option value="7">7</option>
+              <option value="8">8</option>
+              <option value="9">9</option>
+              <option value="10">10</option>
+            </select>
+          </div>
+          <div class="setting-item">
+            <label><i data-lucide="clock"></i> DRAW TIME</label>
+            <select id="settingDrawTime">
+              <option value="15">15s</option>
+              <option value="20">20s</option>
+              <option value="30">30s</option>
+              <option value="40">40s</option>
+              <option value="50">50s</option>
+              <option value="60">60s</option>
+              <option value="70">70s</option>
+              <option value="80" selected>80s</option>
+              <option value="90">90s</option>
+              <option value="100">100s</option>
+              <option value="120">120s</option>
+              <option value="150">150s</option>
+              <option value="180">180s</option>
+            </select>
+          </div>
+          <div class="setting-item">
+            <label><i data-lucide="lightbulb"></i> HINTS</label>
+            <select id="settingHints">
+              <option value="0">0 (OFF)</option>
+              <option value="1">1</option>
+              <option value="2" selected>2</option>
+              <option value="3">3</option>
+              <option value="4">4</option>
+              <option value="5">5</option>
+            </select>
+          </div>
+          <div class="setting-item">
+            <label><i data-lucide="list"></i> WORD COUNT</label>
+            <select id="settingWordCount">
+              <option value="1">1</option>
+              <option value="2">2</option>
+              <option value="3" selected>3</option>
+              <option value="4">4</option>
+              <option value="5">5</option>
+            </select>
+          </div>
+        </div>
+        <div class="custom-words-section">
+          <label style="display: block; font-family: var(--pixel-font); font-size: 7px; color: var(--text-muted); letter-spacing: 1px; margin-bottom: 6px;">
+            <i data-lucide="pencil-line" style="width:12px;height:12px;vertical-align:middle;margin-right:4px"></i>CUSTOM WORDS
+          </label>
+          <textarea id="settingCustomWords" placeholder="word1, word2, word3..."></textarea>
+          <label>
+            <input type="checkbox" id="settingCustomOnly"> Custom only
+          </label>
+        </div>
+      </div>
+
+      <div class="lobby-panel">
+        <h3><i data-lucide="users"></i> PLAYERS <span id="lobbyPlayerCount">0</span>/<span id="lobbyMaxPlayers">8</span></h3>
+        <div class="lobby-players" id="lobbyPlayers"></div>
+      </div>
+
+      <div class="lobby-actions">
+        <button class="btn btn-start" id="startGameBtn" onclick="startGame()" disabled>
+          <i data-lucide="play"></i>
+          START
+        </button>
+        <p class="waiting-text" id="waitingText">WAITING FOR HOST_</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- GAME -->
+  <div id="gameScreen" class="screen">
+    <div class="game-top-bar">
+      <div class="round-info">RND <span id="roundNum">1</span>/<span id="totalRounds">3</span></div>
+      <div class="word-hint" id="wordHint"></div>
+      <div style="display: flex; align-items: center; gap: 8px;">
+        <button class="btn-sound-toggle" id="soundToggle" title="Toggle Sound">
+          <i data-lucide="volume-2" id="soundIcon"></i>
+        </button>
+        <div class="timer-circle" id="timerCircle">
+          <span id="timerText">80</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="game-main">
+      <div class="players-panel" id="playersPanel"></div>
+
+      <div class="canvas-area">
+        <div class="your-word-display" id="yourWordDisplay">
+          <i data-lucide="pen-tool" style="width:14px;height:14px;vertical-align:middle;margin-right:4px"></i>
+          DRAW: <span id="yourWordText"></span>
+        </div>
+        <div class="canvas-container" id="canvasContainer">
+          <canvas id="drawingCanvas"></canvas>
+          <div class="floating-reactions" id="floatingReactions"></div>
+        </div>
+
+        <div class="reaction-bar" id="reactionBar">
+          <button class="reaction-btn" data-emoji="😂">😂</button>
+          <button class="reaction-btn" data-emoji="👏">👏</button>
+          <button class="reaction-btn" data-emoji="😮">😮</button>
+          <button class="reaction-btn" data-emoji="❤️">❤️</button>
+          <button class="reaction-btn" data-emoji="🔥">🔥</button>
+          <button class="reaction-btn" data-emoji="💀">💀</button>
+        </div>
+
+        <div class="overlay" id="wordChoiceOverlay">
+          <div class="word-choice-overlay">
+            <h2><i data-lucide="hand-metal" style="width:18px;height:18px;vertical-align:middle;margin-right:6px"></i>PICK YOUR WORD</h2>
+            <div class="word-choices" id="wordChoicesContainer"></div>
+            <p style="margin-top: 14px;"><i data-lucide="timer" style="width:12px;height:12px;vertical-align:middle;margin-right:4px"></i>AUTO-SELECT IN <span id="chooseCountdown">15</span>s</p>
+          </div>
+        </div>
+
+        <div class="overlay" id="choosingOverlay">
+          <div class="choosing-overlay">
+            <h2><span id="choosingDrawerName">???</span> IS CHOOSING</h2>
+            <div class="choosing-dots"><span></span><span></span><span></span></div>
+          </div>
+        </div>
+
+        <div class="overlay" id="turnEndOverlay">
+          <div class="turn-end-overlay">
+            <h2>THE WORD WAS</h2>
+            <div class="revealed-word" id="revealedWord"></div>
+            <div class="score-board" id="turnScoreBoard"></div>
+          </div>
+        </div>
+
+        <div class="overlay" id="gameOverOverlay">
+          <div class="game-over-overlay">
+            <h2><i data-lucide="trophy" style="width:20px;height:20px;vertical-align:middle;margin-right:6px"></i>GAME OVER</h2>
+            <div class="podium" id="podium"></div>
+            <div class="remaining-rankings" id="remainingRankings"></div>
+            <button class="btn btn-play-again" id="playAgainBtn" onclick="playAgain()">
+              <i data-lucide="rotate-ccw"></i>
+              PLAY AGAIN
+            </button>
+          </div>
+        </div>
+
+        <div class="drawing-tools" id="drawingTools" style="display: none;">
+          <div class="color-palette" id="colorPalette"></div>
+          <div class="tool-separator"></div>
+          <div class="brush-sizes" id="brushSizes"></div>
+          <div class="tool-separator"></div>
+          <div class="tool-btns">
+            <button class="tool-btn" id="toolPencil" title="Pencil" onclick="setTool('pencil')"><i data-lucide="pencil"></i></button>
+            <button class="tool-btn" id="toolEraser" title="Eraser" onclick="setTool('eraser')"><i data-lucide="eraser"></i></button>
+            <button class="tool-btn" id="toolFill" title="Fill" onclick="setTool('fill')"><i data-lucide="paint-bucket"></i></button>
+            <button class="tool-btn" id="toolUndo" title="Undo" onclick="undoDraw()"><i data-lucide="undo-2"></i></button>
+            <button class="tool-btn" id="toolClear" title="Clear" onclick="clearCanvasAction()"><i data-lucide="trash-2"></i></button>
+          </div>
+        </div>
+      </div>
+
+      <div class="chat-panel">
+        <div class="chat-messages" id="chatMessages"></div>
+        <div class="chat-input-area">
+          <div class="chat-input-wrapper">
+            <i data-lucide="message-circle" class="chat-input-icon"></i>
+            <input type="text" id="chatInput" placeholder="TYPE GUESS..." maxlength="100" autocomplete="off">
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="/js/bgeffects.js"></script>
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="/js/avatar.js"></script>
+  <script src="/js/canvas.js"></script>
+  <script src="/js/sounds.js"></script>
+  <script src="/js/game.js"></script>
+  <script>
+    // Initialize Lucide icons after DOM loads
+    document.addEventListener('DOMContentLoaded', () => {
+      lucide.createIcons();
+    });
+  </script>
+</body>
+</html>
