@@ -570,6 +570,14 @@ function handlePlayerLeave(socketId, roomId) {
 }
 
 const PORT = process.env.PORT || 3000;
-server.listen(PORT, '0.0.0.0', () => {
-  console.log(`Scribble clone server running on http://localhost:${PORT}`);
-});
+
+// When running locally (e.g. `node server.js`), start the HTTP server.
+// On Vercel, this file is imported as a module and the exported server
+// is used as the handler, so we avoid calling listen() there.
+if (require.main === module) {
+  server.listen(PORT, '0.0.0.0', () => {
+    console.log(`Scribble clone server running on http://localhost:${PORT}`);
+  });
+}
+
+module.exports = server;
