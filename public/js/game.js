@@ -1,5 +1,6 @@
 // ===== GAME CLIENT - FIXED =====
-const socket = io({ transports: ['websocket', 'polling'] });
+// On Vercel, WebSocket upgrades can fail; prefer long polling for reliability.
+const socket = io({ transports: ['polling'] });
 
 // State
 let myId = null;
