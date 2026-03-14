@@ -1,6 +1,7 @@
 // ===== GAME CLIENT =====
 // Use both transports; after server restart (e.g. Render spin-up) force clean reconnect.
-const socket = io({
+// For split deployment (e.g. UI on Cloudflare Pages, backend on Render), set window.SOCKET_URL in index.html.
+const socket = io(typeof window !== 'undefined' && window.SOCKET_URL ? window.SOCKET_URL : 'https://skribbl-retro.onrender.com/', {
   transports: ['websocket', 'polling'],
   reconnection: true,
   reconnectionAttempts: Infinity,
